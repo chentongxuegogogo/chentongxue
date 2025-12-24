@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life - Your Name</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-white min-h-screen text-gray-900">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center pointer-events-none">
+        <a href="preview.html" class="pointer-events-auto flex items-center gap-2 text-gray-500 hover:text-black transition-colors duration-300 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-100 shadow-sm hover:shadow-md">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span class="text-sm font-medium">Home</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 pt-32 pb-24">
+        
+        <header class="mb-20 animate-[fadeIn_0.6s_ease-out]">
+            <span class="text-red-600 font-bold tracking-widest uppercase text-sm mb-2 block">Life & Passion</span>
+            <h1 class="text-5xl md:text-7xl font-bold text-gray-900 tracking-tight">
+                Captured & <br/>Written.
+            </h1>
+        </header>
+
+        <!-- Photography Section -->
+        <section class="mb-24 animate-[slideUp_0.8s_ease-out]">
+            <div class="flex items-end justify-between mb-8 border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <h2 class="text-2xl font-bold text-gray-900">Photography</h2>
+                </div>
+                <span class="text-sm text-gray-400">Selected Works</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Photo 1 -->
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/3] bg-gray-100 mb-4">
+                        <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&q=80&w=800" alt="Urban Solitude" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">Urban Solitude</h3>
+                            <p class="text-gray-500 text-sm mt-1">Tokyo • 2023-12</p>
+                        </div>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-red-500"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </div>
+                </div>
+
+                <!-- Photo 2 -->
+                <div class="group cursor-pointer">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/3] bg-gray-100 mb-4">
+                        <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=800" alt="Morning Coffee" class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors">Morning Coffee</h3>
+                            <p class="text-gray-500 text-sm mt-1">Home • 2024-01</p>
+                        </div>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-red-500"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Articles Section -->
+        <section class="animate-[slideUp_1s_ease-out]">
+            <div class="flex items-end justify-between mb-8 border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                    <h2 class="text-2xl font-bold text-gray-900">Articles</h2>
+                </div>
+                <span class="text-sm text-gray-400">Thoughts & Tutorials</span>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <!-- Article 1 -->
+                <a href="#" class="group block p-6 rounded-2xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-200 hover:shadow-lg transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors mb-2">The Art of Interaction Design</h3>
+                            <div class="flex gap-3 text-sm text-gray-500">
+                                <span>2024-02-15</span>
+                                <span class="px-2 py-0.5 bg-gray-200 rounded-full text-xs text-gray-700">Design</span>
+                                <span class="px-2 py-0.5 bg-gray-200 rounded-full text-xs text-gray-700">UX</span>
+                            </div>
+                        </div>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 group-hover:text-red-500 transition-colors"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </div>
+                </a>
+
+                <!-- Article 2 -->
+                <a href="#" class="group block p-6 rounded-2xl bg-gray-50 hover:bg-white border border-transparent hover:border-gray-200 hover:shadow-lg transition-all duration-300">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-red-600 transition-colors mb-2">Building Scalable Frontends</h3>
+                            <div class="flex gap-3 text-sm text-gray-500">
+                                <span>2024-01-20</span>
+                                <span class="px-2 py-0.5 bg-gray-200 rounded-full text-xs text-gray-700">Tech</span>
+                                <span class="px-2 py-0.5 bg-gray-200 rounded-full text-xs text-gray-700">React</span>
+                            </div>
+                        </div>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 group-hover:text-red-500 transition-colors"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Simple fade-in animation
+        document.body.style.opacity = '0';
+        window.onload = function() {
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.6s ease-out';
+                document.body.style.opacity = '1';
+            }, 50);
+        };
+    </script>
+</body>
+</html>

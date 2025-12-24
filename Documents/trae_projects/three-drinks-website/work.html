@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Work - Your Name</title>
+    <meta name="description" content="Work & Experience — Professional Journey of Your Name. Product Engineer & Interaction Designer." />
+
+    <!-- Reduce layout shifts / speed up font loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Social sharing (optional but recommended) -->
+    <meta property="og:title" content="Work - Your Name" />
+    <meta property="og:description" content="Work & Experience — Professional Journey of Your Name." />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF7] min-h-screen text-stone-900">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center pointer-events-none">
+        <a href="preview.html" class="pointer-events-auto flex items-center gap-2 text-gray-500 hover:text-black transition-colors duration-300 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-100 shadow-sm hover:shadow-md">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span class="text-sm font-medium">Home</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-6 pt-32 pb-24 animate-[fadeIn_0.5s_ease-out]">
+        
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-2 text-amber-700 font-medium tracking-widest uppercase text-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            <span>Work & Experience</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-stone-900 mb-8">Professional Journey</h1>
+        
+        <div class="prose prose-stone mb-12 text-stone-600">
+            <p class="text-lg leading-relaxed">Product Engineer & Interaction Designer</p>
+        </div>
+
+        <!-- Highlights -->
+        <section class="mb-16">
+            <h2 class="text-xl font-bold text-stone-900 mb-6 border-b border-stone-200 pb-2">Highlights</h2>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <li class="bg-white p-4 rounded-lg border border-stone-100 shadow-sm text-stone-700">5+ years of Full Stack Development</li>
+                <li class="bg-white p-4 rounded-lg border border-stone-100 shadow-sm text-stone-700">Led design system migration for enterprise product</li>
+                <li class="bg-white p-4 rounded-lg border border-stone-100 shadow-sm text-stone-700">Open source contributor</li>
+            </ul>
+        </section>
+
+        <!-- Experience -->
+        <section class="mb-16">
+            <h2 class="text-xl font-bold text-stone-900 mb-6 border-b border-stone-200 pb-2">Experience</h2>
+            <div class="space-y-8">
+                <!-- Job 1 -->
+                <div class="relative border-l-2 border-stone-200 pl-6 pb-2">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-stone-300"></div>
+                    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+                        <h3 class="text-lg font-semibold text-stone-900">Senior Frontend Engineer</h3>
+                        <span class="text-sm text-stone-500 font-mono">2021 - Present</span>
+                    </div>
+                    <div class="text-stone-800 font-medium mb-3">Tech Corp</div>
+                    <ul class="list-disc list-inside space-y-1 text-stone-600 text-sm">
+                        <li>Architected the new dashboard using Next.js</li>
+                        <li>Improved performance by 40%</li>
+                    </ul>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="relative border-l-2 border-stone-200 pl-6 pb-2">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-stone-300"></div>
+                    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+                        <h3 class="text-lg font-semibold text-stone-900">Web Developer</h3>
+                        <span class="text-sm text-stone-500 font-mono">2019 - 2021</span>
+                    </div>
+                    <div class="text-stone-800 font-medium mb-3">Creative Studio</div>
+                    <ul class="list-disc list-inside space-y-1 text-stone-600 text-sm">
+                        <li>Developed award-winning marketing sites</li>
+                        <li>Collaborated closely with designers</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education & Skills -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+            <section>
+                <div class="flex items-center gap-2 mb-6 border-b border-stone-200 pb-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-stone-400"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    <h2 class="text-xl font-bold text-stone-900">Education</h2>
+                </div>
+                <div class="mb-4">
+                    <h3 class="font-semibold text-stone-900">University of Technology</h3>
+                    <p class="text-stone-600">B.S. Computer Science</p>
+                    <p class="text-sm text-stone-400">2019</p>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex items-center gap-2 mb-6 border-b border-stone-200 pb-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-stone-400"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <h2 class="text-xl font-bold text-stone-900">Skills</h2>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-full text-sm font-medium">React</span>
+                    <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-full text-sm font-medium">TypeScript</span>
+                    <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-full text-sm font-medium">Next.js</span>
+                    <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-full text-sm font-medium">Node.js</span>
+                    <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-full text-sm font-medium">Figma</span>
+                    <span class="px-3 py-1 bg-stone-100 text-stone-700 rounded-full text-sm font-medium">Tailwind CSS</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- Download CTA -->
+        <div class="mt-12 p-8 bg-stone-900 text-stone-100 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+                <h3 class="text-xl font-bold mb-2">Want the full version?</h3>
+                <p class="text-stone-400 text-sm">Download my resume in PDF format.</p>
+            </div>
+            <a href="resume.pdf" download class="flex items-center gap-2 bg-white text-stone-900 px-6 py-3 rounded-xl font-bold hover:bg-stone-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Download PDF
+            </a>
+        </div>
+
+    </main>
+
+    <script>
+        // Fade-in: respect "prefers-reduced-motion"
+        (function () {
+            const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) return;
+
+            document.body.style.opacity = '0';
+            window.addEventListener('load', function () {
+                window.setTimeout(() => {
+                    document.body.style.transition = 'opacity 0.5s ease-out';
+                    document.body.style.opacity = '1';
+                }, 50);
+            });
+        })();
+    </script>
+</body>
+</html>

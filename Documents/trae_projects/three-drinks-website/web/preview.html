@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>陈芳林 | AI Trainer & Designer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ================= NEW ANIMATION SCHEME (Restrained & Fast) ================= */
+        :root {
+            --ease-out: cubic-bezier(0.2, 0, 0, 1);
+            --intro-bg: #F7F8FA;
+            --text-1: rgba(0,0,0,.86);
+            --text-2: rgba(0,0,0,.55);
+            --accent: #2563eb; /* 如有站点主题色可替换 */
+        }
+
+        /* ========== Intro overlay ========== */
+        .intro{
+            position: fixed;
+            inset: 0;
+            background: var(--intro-bg);
+            display: grid;
+            place-items: center;
+            z-index: 9999;
+            
+            opacity: 0;
+            transition: opacity 160ms var(--ease-out);
+        }
+        .intro.is-visible{ opacity: 1; }
+
+        .intro__content{
+            text-align: center;
+            padding: 24px;
+            width: 100%;
+            max-width: 900px; /* Wider container */
+        }
+
+        .intro__h1{
+            margin: 0;
+            color: var(--text-1);
+            letter-spacing: -0.02em;
+            font-size: 3.2rem; /* Balanced Scale */
+            font-weight: 700;
+            line-height: 1.2;
+            
+            opacity: 0;
+            /* Increased distance to 40px for smoother motion perception */
+            transform: translateY(40px); 
+            transition: opacity 800ms var(--ease-out), transform 800ms var(--ease-out);
+            will-change: transform, opacity; /* Force GPU */
+        }
+
+        .intro__h2{
+            margin: 16px 0 0;
+            color: var(--text-2);
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.15em; /* Elegant spacing */
+            text-transform: uppercase;
+            
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 800ms var(--ease-out), transform 800ms var(--ease-out);
+            transition-delay: 150ms; /* Slightly longer stagger */
+            will-change: transform, opacity;
+        }
+
+        /* Mobile Adjustment */
+        @media (max-width: 768px) {
+            .intro__h1 { font-size: 2rem; }
+            .intro__h2 { font-size: 0.85rem; }
+        }
+
+        .intro.is-visible .intro__h1,
+        .intro.is-visible .intro__h2{
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* underline sweep on name */
+        .intro__name{
+            position: relative;
+            display: inline-block;
+        }
+        .intro__name::after{
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 2px; /* Adjusted for balanced text */
+            height: 3px; /* Refined underline */
+            background: color-mix(in srgb, var(--accent) 50%, transparent);
+            transform: scaleX(0);
+            transform-origin: left center;
+            opacity: 0;
+            transition: transform 600ms var(--ease-out), opacity 600ms ease;
+        }
+        .intro.is-underline .intro__name::after{
+            transform: scaleX(1);
+            opacity: 1;
+        }
+
+        .intro__skip{
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            border: 0;
+            background: transparent;
+            color: rgba(0,0,0,.55);
+            font: inherit;
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .intro__skip:focus-visible{
+            outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+            outline-offset: 2px;
+        }
+
+        /* Exit state: 文字先出 200ms，再背景淡出 240ms */
+        .intro.is-exiting .intro__h1,
+        .intro.is-exiting .intro__h2{
+            opacity: 0;
+            transform: translateY(4px);
+            transition-duration: 200ms;
+        }
+        .intro.is-exiting{
+            opacity: 0;
+            transition-duration: 240ms;
+            transition-delay: 200ms;
+        }
+
+        /* ========== Page gating + unified home intro ========== */
+        .page--gated{ opacity: 0; }
+
+        .page.is-prewarm{
+            opacity: 0.001;
+            transition: opacity 120ms linear;
+        }
+
+        .page.is-home-in{
+            opacity: 1;
+            transition: opacity 220ms var(--ease-out);
+        }
+
+        /* Home reveal elements (hero + cards) */
+        [data-stage="intro"] .home-reveal,
+        [data-stage="intro"] .home-cards{
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        [data-stage="home"] .home-reveal{
+            opacity: 0;
+            transform: translateY(12px);
+            transition: 
+                opacity 620ms var(--ease-out), 
+                transform 620ms var(--ease-out);
+            will-change: opacity, transform;
+        }
+        [data-stage="home"] .hero__title.home-reveal{ transition-delay: 0ms; }
+        [data-stage="home"] .hero__subtitle.home-reveal{ transition-delay: 90ms; }
+        [data-stage="home"] .hero__cta.home-reveal{ transition-delay: 180ms; }
+
+        [data-stage="home"] .home-cards{
+            opacity: 0;
+            transform: translateY(8px);
+            transition: 
+                opacity 360ms var(--ease-out), 
+                transform 360ms var(--ease-out);
+            transition-delay: 140ms;
+            will-change: opacity, transform;
+        }
+
+        .page.is-home-in .home-reveal,
+        .page.is-home-in .home-cards{
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce){
+            .intro, .intro__h1, .intro__h2, .intro__name::after, .page, 
+            .home-reveal, .home-cards{
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+        :root {
+            /* Interaction Parameters - Tuned for "Restrained Assistant" */
+            /* Low Frequency Mode */
+            --commit-dwell-time: 780ms;  /* Must hold still for this long */
+            --stable-time: 420ms;        /* Must not change preview index for this long */
+            --slow-move-threshold: 0.25; /* px/ms - Max speed allowed for auto-commit */
+            
+            --commit-cooldown: 900ms;    /* Long cooldown to prevent accidental switches */
+            --lock-release-delay: 180ms;
+            --preview-safe-zone-delta: 80px; /* Large safe zone to prevent jitter */
+            --edge-deadband: 60px; /* Deadband near edges */
+            
+            /* Visual Config */
+            --card-radius: 32px;
+            --card-shadow: 0 20px 40px -10px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.05);
+            --bg-gradient-start: #FCF8F5; /* Coffee Start */
+            --bg-gradient-end: #F2EBE6;   /* Coffee End */
+            
+            --color-coffee: #8B5E3C;
+            --color-coke: #E53935;
+            --color-water: #4B7BE5;
+            
+            /* Spotlight Variables */
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+            --spotlight-color: rgba(255, 255, 255, 0.8);
+        }
+
+        body { 
+            font-family: 'Noto Sans SC', sans-serif; 
+            /* Dynamic Background Transition */
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            background-size: 200% 200%;
+            transition: --bg-gradient-start 1.2s cubic-bezier(0.2, 0, 0, 1), 
+                        --bg-gradient-end 1.2s cubic-bezier(0.2, 0, 0, 1);
+            color: #1f2937;
+            overflow: hidden; 
+            touch-action: pan-y; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Register custom properties for smooth gradient transition if supported */
+        @property --bg-gradient-start { syntax: '<color>'; inherits: false; initial-value: #FCFCFD; }
+        @property --bg-gradient-end { syntax: '<color>'; inherits: false; initial-value: #F3F6FF; }
+
+        /* Noise Texture */
+        .bg-noise {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Carousel Track */
+        .carousel-track {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 520px;
+            perspective: 1200px; /* For 3D transforms */
+            transform-style: preserve-3d;
+        }
+
+        /* Card Base */
+        .card {
+            position: absolute;
+            width: 320px;
+            height: 460px;
+            border-radius: var(--card-radius);
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            /* border: 1px solid var(--card-border); Removed for spotlight */
+            box-shadow: var(--card-shadow);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            will-change: transform, opacity, filter;
+            user-select: none;
+            overflow: hidden;
+            transform-style: preserve-3d; /* For parallax children */
+            transform-origin: center center;
+        }
+
+        /* Spotlight Border Implementation */
+        .card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: var(--card-radius);
+            padding: 1.5px; /* Border width */
+            background: radial-gradient(
+                600px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(var(--theme-rgb), 0.6),
+                transparent 40%
+            );
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        @media (min-width: 768px) {
+            .card { width: 360px; height: 500px; }
+        }
+
+        /* Watermark Typography */
+        .watermark-text {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-90deg);
+            font-size: 120px;
+            font-weight: 900;
+            color: var(--theme-color);
+            opacity: 0.04;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            letter-spacing: 0.05em;
+            font-family: sans-serif;
+            mix-blend-mode: overlay;
+        }
+
+        /* 1) Preview Feedback: Highlight Bar - REMOVED (Replaced by Spotlight) */
+        /* .card::before { ... } */
+        
+        .card.preview-active {
+            /* 1px inner stroke simulation via box-shadow */
+            box-shadow: var(--card-shadow), inset 0 0 0 1px rgba(var(--theme-rgb), 0.45);
+        }
+
+        /* 2) 3D Tilt is handled via JS transform styles */
+        
+        /* 3) Click-to-focus Feedback */
+        /* A11y: High Visibility Focus Ring */
+        .card:focus-visible, .explore-btn:focus-visible, .chip:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(var(--theme-rgb), 0.3), 0 0 0 1px var(--theme-color);
+        }
+        /* Make card focusable */
+        .card { outline: none; }
+
+        .clicked-feedback {
+            animation: pulse-feedback 0.26s cubic-bezier(0.2, 0, 0, 1);
+        }
+        @keyframes pulse-feedback {
+            0% { transform: translateX(var(--tx)) scale(1); }
+            40% { transform: translateX(var(--tx)) scale(0.985); }
+            100% { transform: translateX(var(--tx)) scale(1); }
+        }
+
+        /* 4) CTA Enhanced */
+        .explore-btn {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--theme-color);
+            transition: all 0.2s ease;
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        .explore-btn svg {
+            transition: transform 0.2s ease;
+        }
+        .explore-btn:hover {
+            opacity: 1;
+        }
+        .explore-btn:hover svg {
+            transform: translateX(4px);
+        }
+        .explore-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 5) Active Content Reveal - "Pinterest Style" Overlay */
+        .overlay-reveal {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 24px;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.26s cubic-bezier(0.2, 0, 0, 1);
+            border-top: 1px solid rgba(255,255,255,0.5);
+            z-index: 20;
+        }
+        .card:hover .overlay-reveal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        /* Hide overlay on mobile or active card if desired, but request says "hover" */
+        /* To avoid conflict with main content, maybe we only show this overlay 
+           when card is NOT active? Or active too?
+           User request: "Content reveal... on hover". 
+           Let's keep it simple: Show on hover for all.
+        */
+        
+        /* Chip Styling - Tonal */
+        .chip {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 12px; /* Material 3 small radius */
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            /* Tonal background based on theme color */
+            background: color-mix(in srgb, var(--theme-color) 12%, transparent);
+            color: color-mix(in srgb, var(--theme-color) 90%, black);
+            margin-right: 8px;
+            margin-bottom: 8px;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), background 0.2s ease;
+            cursor: pointer;
+            border: 1px solid color-mix(in srgb, var(--theme-color) 5%, transparent);
+        }
+        .chip:hover {
+            transform: translateY(-2px);
+            background: color-mix(in srgb, var(--theme-color) 20%, transparent);
+        }
+
+        /* Content Visibility Logic - Staggered */
+        .content-expanded {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.16s ease-out, transform 0.16s ease-out;
+            pointer-events: none; 
+        }
+        .card[data-status="active"] .content-expanded {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            transition: opacity 0.5s ease-out 0.18s, transform 0.5s ease-out 0.18s;
+        }
+        
+        /* Stats/Preview block - High Contrast */
+        .stats-block {
+            display: flex;
+            gap: 24px; /* More breathing room */
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .stat-val { 
+            font-family: 'Noto Sans SC', sans-serif;
+            font-weight: 300; /* Light weight for elegance */
+            font-size: 28px; /* Big number */
+            line-height: 1.1;
+            color: var(--theme-color); 
+            letter-spacing: -0.03em;
+        }
+        .stat-label { 
+            font-size: 10px; 
+            color: #6b7280; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em; 
+            margin-top: 4px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        /* Quote Styling */
+        .card-quote {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #4b5563;
+            font-style: italic;
+            margin-bottom: 4px;
+            position: relative;
+            padding-left: 12px;
+            border-left: 2px solid color-mix(in srgb, var(--theme-color) 30%, transparent);
+        }
+
+        /* Shine Layer */
+        .shine-layer {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                105deg, 
+                transparent 20%, 
+                rgba(255,255,255,0.2) 45%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0.2) 55%, 
+                transparent 80%
+            );
+            background-size: 200% 100%;
+            background-position: 200% 0;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            opacity: 0.12; /* Very subtle */
+            transition: opacity 0.3s;
+        }
+        .card:hover .shine-layer {
+            opacity: 0.16;
+        }
+        /* Animation class added via JS on hover enter */
+        .shine-sweep {
+            animation: shine-sweep 0.46s ease-out forwards;
+        }
+        @keyframes shine-sweep {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 1. Hero Title */
+        .hero-title {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 620ms var(--ease-out-expo), 
+                        transform 620ms var(--ease-out-expo);
+            will-change: opacity, transform;
+        }
+        .hero-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 2. Subtitle */
+        .hero-subtitle {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 460ms var(--ease-out-expo), 
+                        transform 460ms var(--ease-out-expo);
+            transition-delay: 120ms;
+            will-change: opacity, transform;
+        }
+        .hero-subtitle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 3. Cards Entrance (Fade In Only) */
+        .card-enter {
+            opacity: 0 !important; /* Force initial hide */
+            transition: opacity 360ms ease-out;
+            will-change: opacity;
+        }
+        .card-enter.visible {
+            opacity: 1 !important; /* Visuals function will manage opacity later, but for entrance we force 1 or let it blend */
+        }
+        /* We need to be careful not to conflict with updateVisuals opacity (0.6 for inactive). 
+           Strategy: The entrance animation controls the 'mounting' opacity. 
+           Actually, updateVisuals sets opacity. We should probably just animate the container or use a specific entrance class that is removed after.
+           Better: Initial state in JS, then transition to updateVisuals state.
+        */
+
+        /* 4. Explore/Hint */
+        .tutorial-hint {
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 260ms ease-out, transform 260ms ease-out;
+            transition-delay: 260ms;
+        }
+        .tutorial-hint.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 5. CTA Entrance (Active Card Only) */
+        .card[data-status="active"].card-enter .explore-btn {
+            opacity: 0 !important;
+            transform: translateX(-8px) !important;
+            transition: opacity 260ms ease-out, transform 260ms ease-out !important;
+            transition-delay: 260ms !important;
+        }
+        .card[data-status="active"].card-enter.visible .explore-btn {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-title, .hero-subtitle, .tutorial-hint, .card-enter {
+                transition: opacity 150ms ease !important;
+                transform: none !important;
+                transition-delay: 0ms !important;
+            }
+        }
+
+        /* Carousel Styles */
+        /* Carousel Styles */
+
+        /* Tech Badge (Engineering Pride) */
+        .tech-badge {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            font-family: 'JetBrains Mono', monospace; /* Coding font */
+            font-size: 10px;
+            color: rgba(0,0,0,0.4);
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.05);
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+        .tech-badge span {
+            position: relative;
+        }
+        .tech-badge span:not(:last-child)::after {
+            content: "•";
+            position: absolute;
+            right: -9px;
+            color: rgba(0,0,0,0.2);
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative">
+
+    <div id="intro" class="intro" role="dialog" aria-modal="true" aria-label="介绍">
+        <button class="intro__skip" type="button" data-intro-skip>跳过</button>
+      
+        <div class="intro__content" aria-live="polite">
+          <h1 class="intro__h1">你好，我是 <span class="intro__name">陈芳林</span></h1>
+          <p class="intro__h2">一名 AI 训练师</p>
+        </div>
+    </div>
+
+    <div class="bg-noise"></div>
+
+    <!-- MAIN CONTENT -->
+    <main id="page" class="page page--gated w-full h-screen flex flex-col relative z-10" data-stage="intro">
+        
+        <header class="hero w-full pt-12 pb-4 px-6 text-center select-none">
+            <h1 id="hero-title" class="hero-title hero__title home-reveal text-2xl font-bold tracking-tight text-gray-900 mb-1">
+                陈芳林
+            </h1>
+            <p id="hero-subtitle" class="hero-subtitle hero__subtitle home-reveal text-sm text-gray-500 font-medium tracking-wide">
+                人工智能训练师 & 交互设计师
+            </p>
+            <p class="mt-6 text-xs text-gray-400 uppercase tracking-widest opacity-0" style="visibility: hidden;">Click or Drag to explore</p>
+        </header>
+
+        <div class="flex-1 flex flex-col items-center justify-center relative w-full overflow-hidden" id="carousel-area">
+            
+            <section class="carousel-track carousel home-cards" id="card-track">
+                <!-- Cards injected via JS -->
+            </section>
+            
+            <div id="tutorial-hint" class="tutorial-hint">
+                移动鼠标靠近卡片即可切换
+            </div>
+
+            <div class="flex gap-3 mt-8" id="indicators">
+                <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300 bg-gray-300"></div>
+                <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300 bg-gray-300"></div>
+                <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300 bg-gray-300"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // CONFIG - Optimized for "Restrained Assistant"
+        const CONFIG = {
+            cardWidth: 320,  // Base card width
+            gap: 40,         // Gap between cards
+            
+            // Interaction Thresholds
+            commitDwellTime: 780,     // ms to hold before auto-switch
+            stableTime: 420,          // ms of stability required
+            slowMoveThreshold: 0.25,  // px/ms max speed for auto-switch
+            
+            commitCooldown: 900,      // ms cooldown after switch
+            lockReleaseDelay: 180,    // ms before unlocking after click
+            previewSafeZoneDelta: 80, // px buffer
+            edgeDeadband: 60,         // px deadband at edges
+            
+            // Animation Physics (Spring)
+            spring: {
+                stiffness: 120, // Softer spring
+                damping: 32,    // High damping for no bounce
+                mass: 1.4       // Heavy feel
+            }
+        };
+
+        const DATA = [
+            {
+                id: 'coffee',
+                title: 'AI 训练师',
+                subtitle: '职业 · Profession',
+                color: '#8B5E3C',
+                rgb: '139, 94, 60',
+                gradient: 'from-[#8B5E3C]/10 to-[#8B5E3C]/30',
+                /* Database / Stack icon */
+                icon: '<path d="M12 2c-4.42 0-8 1.79-8 4s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4z"></path><path d="M4 10c0 2.21 3.58 4 8 4s8-1.79 8-4"></path><path d="M4 14c0 2.21 3.58 4 8 4s8-1.79 8-4"></path><path d="M4 18c0 2.21 3.58 4 8 4s8-1.79 8-4"></path>',
+                chips: ['数据闭环 Pipeline', '安全攻防 RedTeaming', '提示工程 Prompt'],
+                stats: [
+                    { label: '一致性IAA', val: '>0.92' }, 
+                    { label: '安全拦截', val: '100%' },
+                    { label: '逻辑推理', val: 'CoT' }
+                ],
+                quote: '构建从高质量数据到鲁棒模型的核心闭环。',
+                link: 'work.html'
+            },
+            {
+                id: 'coke',
+                title: '竞逐者',
+                subtitle: '突破 · Breakthrough',
+                color: '#E53935',
+                rgb: '229, 57, 53',
+                gradient: 'from-[#E53935]/10 to-[#E53935]/30',
+                /* Activity / Pulse icon */
+                icon: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>',
+                chips: ['篮球竞技', '精准台球', '力量训练'],
+                stats: [
+                    { label: '体脂率', val: '<15%' },
+                    { label: '专注度', val: 'Flow' },
+                    { label: '状态', val: 'On Fire' }
+                ],
+                quote: '掌控身体的律动，是为了更自由地掌控人生。',
+                link: 'life.html'
+            },
+            {
+                id: 'water',
+                title: '同行者',
+                subtitle: '共振 · Resonance',
+                color: '#4B7BE5',
+                rgb: '75, 123, 229',
+                gradient: 'from-[#4B7BE5]/10 to-[#4B7BE5]/30',
+                /* Paper Plane / Travel icon */
+                icon: '<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>',
+                chips: ['环球旅行', '二人世界', '周末探店'],
+                stats: [
+                    { label: '坐标', val: 'Unlock' },
+                    { label: '默契', val: '100%' },
+                    { label: '里程', val: '10k+' }
+                ],
+                quote: '世界很大，但最好的目的地，是有你在身边。',
+                link: 'family.html'
+            }
+        ];
+
+        let activeIndex = 0; // Start at Work (Index 0)
+        let previewIndex = 0;
+        let isLocked = false;
+        let lastMouseMoveTime = 0;
+        let mouseVelocity = 0;
+        let lastMouseX = 0;
+        let commitTimer = null;
+        let stableTimer = null;
+        let cooldownTimer = null;
+        let isCooldown = false;
+
+        // Init
+        function initApp() {
+            const hint = document.getElementById('tutorial-hint');
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            
+            // Inject Tech Badge
+            const badge = document.createElement('div');
+            badge.className = 'tech-badge';
+            badge.innerHTML = `<span>Vanilla JS</span><span>Tailwind</span><span>60 FPS</span><span>No Deps</span>`;
+            document.body.appendChild(badge);
+
+            // 1. Initialize DOM
+            initDOM();
+
+            // 2. Intro Logic
+            (function () {
+                const intro = document.getElementById("intro");
+                const page = document.getElementById("page");
+                const skipBtn = document.querySelector("[data-intro-skip]");
+                if (!intro || !page) return;
+
+                const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+                let finished = false;
+                const HOLD_MS = 650; // 自动停留时间
+
+                function startHome() {
+                    page.classList.remove("page--gated");
+                    page.classList.remove("is-prewarm");
+                    page.dataset.stage = "home";
+
+                    // 下一帧开启 home 入场，确保 transition 生效
+                    requestAnimationFrame(() => {
+                        page.classList.add("is-home-in");
+                        // Trigger hint specifically as it wasn't in the provided CSS block
+                        // Or we can rely on existing hint logic if we add a class
+                        setTimeout(() => hint.classList.add('visible'), 500);
+                        setTimeout(() => hint.classList.remove('visible'), 4000);
+                    });
+                }
+
+                function exitIntro(immediate) {
+                    if (finished) return;
+                    finished = true;
+
+                    if (reduced) {
+                        intro.remove();
+                        startHome();
+                        return;
+                    }
+
+                    intro.classList.add("is-exiting");
+
+                    // 统一时间线：在背景淡出尾段预热主页
+                    // 正常退出总长 440ms；预热在 320ms 处；跳过则更快
+                    setTimeout(() => {
+                        page.classList.add("is-prewarm");
+                    }, immediate ? 80 : 320);
+
+                    setTimeout(() => {
+                        intro.remove();
+                        startHome();
+                    }, immediate ? 260 : 440);
+                }
+
+                function showIntro() {
+                    page.dataset.stage = "intro";
+                    page.classList.add("page--gated");
+
+                    requestAnimationFrame(() => {
+                        intro.classList.add("is-visible");
+
+                        // underline sweep：等 H1 基本到位后触发
+                        setTimeout(() => intro.classList.add("is-underline"), 520);
+
+                        // 自动退出：进入(约) -> 停留 -> 退出
+                        setTimeout(() => exitIntro(false), 160 + 640 + HOLD_MS);
+                    });
+                }
+
+                // 跳过：点击任意处 / 点击按钮 / Esc / Enter
+                intro.addEventListener("click", () => exitIntro(true));
+                if (skipBtn) {
+                    skipBtn.addEventListener("click", (e) => { e.stopPropagation(); exitIntro(true); });
+                }
+                window.addEventListener("keydown", (e) => {
+                    if (finished) return;
+                    if (e.key === "Escape" || e.key === "Enter") exitIntro(true);
+                });
+
+                showIntro();
+            })();
+        }
+
+        initApp();
+
+        function initDOM() {
+            const track = document.getElementById('card-track');
+            
+            DATA.forEach((item, index) => {
+                const card = document.createElement('div');
+                const themeColor = item.color;
+                
+                // Add card class (Removed card-enter to fix visibility issue, relying on container fade)
+                card.className = `card`;
+                card.id = `card-${index}`;
+                card.dataset.index = index;
+                
+                // Staggered Entrance Delay - Not needed for card-enter anymore, but maybe for something else?
+                // keeping it cleanly removed.
+                
+                // Set CSS variables for this card instance
+                card.style.setProperty('--theme-color', themeColor);
+                card.style.setProperty('--card-bg', `rgba(255, 255, 255, 0.9)`);
+                card.style.setProperty('--card-border', `rgba(${item.rgb}, 0.15)`);
+                card.style.setProperty('--card-shadow', `0 20px 40px -10px rgba(${item.rgb}, 0.15), 0 0 1px rgba(0,0,0,0.05)`);
+                card.style.setProperty('--theme-rgb', item.rgb);
+                
+                // Add shine layer
+                const shine = document.createElement('div');
+                shine.className = 'shine-layer';
+                card.appendChild(shine);
+                
+                // Trigger shine sweep on hover
+                card.addEventListener('mouseenter', () => triggerShine(card));
+
+                card.innerHTML += `
+                    <div class="watermark-text">${item.title.toUpperCase()}</div>
+                    <div class="absolute -top-16 -right-16 w-48 h-48 bg-gradient-to-br ${item.gradient} rounded-full blur-3xl opacity-50 pointer-events-none parallax-layer" data-depth="0.5"></div>
+
+                    <div class="relative z-10 flex justify-between items-start pointer-events-none">
+                        <div class="w-12 h-12 flex items-center justify-center bg-white/80 border border-white/60 shadow-sm text-[${themeColor}] parallax-layer" data-depth="1.2" style="border-radius: 16px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="${themeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.icon}</svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs font-semibold tracking-wider text-gray-400 mb-1 uppercase">${item.subtitle}</div>
+                            <h2 class="text-2xl font-bold text-gray-900 leading-tight">${item.title}</h2>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 mt-auto content-expanded">
+                        <div class="flex flex-wrap mb-6 interactive-zone">
+                            ${item.chips.map(chip => `<span class="chip" tabindex="0">${chip}</span>`).join('')}
+                        </div>
+                        <p class="card-quote pointer-events-none">"${item.quote}"</p>
+                        <div class="stats-block pointer-events-none">
+                            ${item.stats.map(stat => `
+                                <div class="stat-item">
+                                    <span class="stat-val">${stat.val}</span>
+                                    <span class="stat-label">${stat.label}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="mt-8 flex items-center justify-between interactive-zone">
+                            <button class="explore-btn group" tabindex="0">
+                                <span class="mr-2">Explore</span>
+                                <svg class="w-4 h-4 transform transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Overlay Reveal -->
+                    <div class="overlay-reveal">
+                         <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">${item.subtitle}</div>
+                         <div class="text-sm font-medium text-gray-800">${item.title}</div>
+                         <div class="mt-3 flex items-center text-xs text-[${themeColor}] font-semibold">
+                             <span>View Details</span>
+                             <svg class="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                         </div>
+                    </div>
+                `;
+                
+                // Tilt Listeners (Per card)
+                card.addEventListener('mousemove', (e) => {
+                    handleTilt(e, card);
+                    // Update Spotlight Position
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+                card.addEventListener('mouseleave', () => resetTilt(card));
+                
+                // Click Listener (Per card)
+                card.addEventListener('click', (e) => {
+                    // Prevent click if we are dragging or locked
+                    if (isLocked) return;
+                    handleCardClick(index, card);
+                });
+
+                // Explore Click
+                const exploreBtn = card.querySelector('.explore-btn');
+                exploreBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (index === activeIndex) window.location.href = item.link;
+                });
+                
+                track.appendChild(card);
+            });
+
+            // Initial Visual Update
+            updateVisuals();
+            
+            // Global Mouse Listener for "Proximity Preview" & "Auto-Commit"
+            document.addEventListener('mousemove', handleGlobalMouseMove);
+        }
+        
+        function triggerShine(card) {
+            const shine = card.querySelector('.shine-layer');
+            shine.classList.remove('shine-sweep');
+            void shine.offsetWidth; // reflow
+            shine.classList.add('shine-sweep');
+        }
+
+        // 3D Tilt Logic
+        function handleTilt(e, card) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            // if (isLocked) return; // Allow tilt even during lock? Maybe better to pause.
+            
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -4; // Max 4 deg
+            const rotateY = ((x - centerX) / centerX) * 4;
+
+            // Parallax Inner Elements
+            const layers = card.querySelectorAll('.parallax-layer');
+            layers.forEach(layer => {
+                const depth = parseFloat(layer.getAttribute('data-depth') || 1);
+                const moveX = -(x - centerX) * 0.03 * depth;
+                const moveY = -(y - centerY) * 0.03 * depth;
+                layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+
+            card.style.transform = `
+                translateX(var(--tx, 0)) 
+                scale(var(--scale, 1)) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg)
+            `;
+        }
+
+        function resetTilt(card) {
+            card.style.transform = `
+                translateX(var(--tx, 0)) 
+                scale(var(--scale, 1)) 
+                rotateX(0deg) 
+                rotateY(0deg)
+            `;
+            // Reset parallax
+            const layers = card.querySelectorAll('.parallax-layer');
+            layers.forEach(layer => layer.style.transform = 'translate(0,0)');
+        }
+
+        function handleGlobalMouseMove(e) {
+            if (isLocked || isCooldown) return;
+
+            const now = Date.now();
+            const dt = now - lastMouseMoveTime;
+            const dx = Math.abs(e.clientX - lastMouseX);
+            mouseVelocity = dt > 0 ? dx / dt : 0;
+            
+            lastMouseMoveTime = now;
+            lastMouseX = e.clientX;
+
+            // Find hovered card
+            const track = document.getElementById('card-track');
+            const trackRect = track.getBoundingClientRect();
+            
+            // Check if mouse is within track vertical bounds (approx)
+            if (e.clientY < trackRect.top || e.clientY > trackRect.bottom) {
+                // Out of bounds, clear preview
+                if (previewIndex !== activeIndex) {
+                    previewIndex = activeIndex;
+                    updateVisuals();
+                }
+                return;
+            }
+
+            // Determine target index based on X position relative to cards
+            // Card width ~320/360, gap 40. Center is active.
+            // Simple approach: Check which card rect we are over
+            let targetIndex = -1;
+            
+            // We need to know where the cards are visually
+            // Center card is at screen center. Left/Right are offset.
+            const centerX = window.innerWidth / 2;
+            const cardW = CONFIG.cardWidth; // approx
+            
+            // Define zones
+            // Center Zone: center ± (cardW/2 - safeZone)
+            // Left Zone: center - cardW ...
+            // Right Zone: center + cardW ...
+            
+            // Improved Logic: Use elementFromPoint is tricky with transforms.
+            // Let's use simple geometry relative to center.
+            const distFromCenter = e.clientX - centerX;
+            
+            // Apply Safe Zone & Deadband
+            // If inside safe zone of ACTIVE card, stay active.
+            const safeZone = (cardW / 2) + CONFIG.previewSafeZoneDelta; 
+            
+            // Deadband logic: If we are close to the edge between cards, don't switch preview yet
+            // Edge is around ±(cardW/2 + gap/2)
+            const edge = (cardW / 2) + (CONFIG.gap / 2);
+            const inDeadband = Math.abs(Math.abs(distFromCenter) - edge) < CONFIG.edgeDeadband;
+            
+            if (inDeadband) return; // Ignore updates in deadband
+
+            if (Math.abs(distFromCenter) < safeZone) {
+                targetIndex = activeIndex;
+            } else if (distFromCenter < -safeZone) {
+                targetIndex = (activeIndex - 1 + 3) % 3;
+            } else if (distFromCenter > safeZone) {
+                targetIndex = (activeIndex + 1 + 3) % 3;
+            }
+
+            if (targetIndex !== -1 && targetIndex !== previewIndex) {
+                // Update Preview immediately
+                previewIndex = targetIndex;
+                updateVisuals();
+                
+                // Reset Stable Timer
+                clearTimeout(stableTimer);
+                stableTimer = setTimeout(() => {
+                    // Stable!
+                }, CONFIG.stableTime);
+            }
+
+            // Auto-Commit Logic (Restrained)
+            // Conditions:
+            // 1. Target != Active
+            // 2. Mouse speed < SlowThreshold
+            // 3. Dwell time passed (handled by timer reset)
+            
+            if (targetIndex !== -1 && targetIndex !== activeIndex) {
+                if (mouseVelocity < CONFIG.slowMoveThreshold) {
+                    if (!commitTimer) {
+                        commitTimer = setTimeout(() => {
+                            // Double check conditions
+                            if (previewIndex === targetIndex && mouseVelocity < CONFIG.slowMoveThreshold) {
+                                commitSwitch(targetIndex);
+                            }
+                        }, CONFIG.commitDwellTime);
+                    }
+                } else {
+                    // Moving too fast, cancel commit
+                    clearTimeout(commitTimer);
+                    commitTimer = null;
+                }
+            } else {
+                clearTimeout(commitTimer);
+                commitTimer = null;
+            }
+        }
+
+        // Switch Core Logic
+        function commitSwitch(newIndex, isClick = false) {
+            if (isLocked || isCooldown) return;
+            
+            isLocked = true;
+            isCooldown = true;
+            clearTimeout(commitTimer);
+            commitTimer = null;
+
+            const oldIndex = activeIndex;
+            const direction = getDirection(oldIndex, newIndex); // -1 or 1
+            
+            // Update State
+            activeIndex = newIndex;
+            previewIndex = newIndex; // Lock preview to active
+            updateIndicators();
+            
+            // 1. Collapse Old Content (160ms)
+            // We can add a class to trigger exit animation on content
+            const oldCard = document.getElementById(`card-${oldIndex}`);
+            // oldCard.querySelector('.content-expanded').style.opacity = '0'; // handled by CSS based on data-status
+            
+            // Start movement slightly earlier or after collapse?
+            // Request: "Collapse 160ms -> Move -> Expand"
+            
+            setTimeout(() => {
+                // Trigger Move
+                updateVisuals(); 
+                
+                // Release Lock
+                setTimeout(() => {
+                    isLocked = false;
+                }, CONFIG.lockReleaseDelay); // 180ms
+                
+                // Release Cooldown
+                setTimeout(() => {
+                    isCooldown = false;
+                }, CONFIG.commitCooldown); // 900ms
+
+            }, 160);
+        }
+
+        function getDirection(from, to) {
+            if (from === 0 && to === 2) return -1;
+            if (from === 2 && to === 0) return 1;
+            return to > from ? 1 : -1;
+        }
+
+        function updateVisuals() {
+            DATA.forEach((item, index) => {
+                const card = document.getElementById(`card-${index}`);
+                
+                // Status
+                if (index === activeIndex) {
+                    card.dataset.status = 'active';
+                    card.classList.remove('preview-active');
+                } else if (index === previewIndex) {
+                    card.dataset.status = 'inactive';
+                    card.classList.add('preview-active');
+                } else {
+                    card.dataset.status = 'inactive';
+                    card.classList.remove('preview-active');
+                }
+
+                let offset = 0;
+                if (index === activeIndex) offset = 0;
+                else if (index === (activeIndex - 1 + 3) % 3) offset = -1; 
+                else offset = 1; 
+
+                // Dynamic Ambient Background
+                if (index === activeIndex) {
+                    // Update global CSS variables for body background
+                    // Colors are hardcoded to match the drink themes but very light/desaturated
+                    let startColor, endColor;
+                    if (DATA[index].id === 'coffee') {
+                        startColor = '#FCF8F5'; // Warm Mist
+                        endColor = '#F2EBE6';   // Latte Foam
+                    } else if (DATA[index].id === 'coke') {
+                        startColor = '#FDF6F6'; // Pale Rose
+                        endColor = '#F8EDED';   // Soft Blush
+                    } else { // water
+                        startColor = '#F5F9FF'; // Ice White
+                        endColor = '#ECF3FF';   // Clear Sky
+                    }
+                    
+                    document.body.style.setProperty('--bg-gradient-start', startColor);
+                    document.body.style.setProperty('--bg-gradient-end', endColor);
+                }
+
+                let transform = '';
+                let zIndex = 0;
+                let scale = 1;
+                let opacity = 1;
+                let filter = 'none';
+
+                if (index === activeIndex) {
+                    transform = `translateX(0)`;
+                    zIndex = 20;
+                    scale = 1.1; // Active scale
+                    opacity = 1;
+                    filter = 'blur(0px)';
+                    
+                    // Card Variable for hover scale base
+                    card.style.setProperty('--scale', 1.1);
+                    card.style.setProperty('--tx', '0px');
+                } else {
+                    // Side cards
+                    // Gap = 40px + CardWidth
+                    const xOffset = offset * (CONFIG.cardWidth + CONFIG.gap); 
+                    transform = `translateX(${xOffset}px)`;
+                    zIndex = 10;
+                    scale = 0.9;
+                    opacity = 0.6; // Dim inactive
+                    // filter = 'blur(2px)'; // Optional: blur inactive
+                    
+                    card.style.setProperty('--scale', 0.9);
+                    card.style.setProperty('--tx', `${xOffset}px`);
+                }
+
+                // Apply Transition
+                // If isLocked (committing), use slower physics
+                // If just previewing, use faster/instant for border, but position is handled here too?
+                // Wait, preview shouldn't move cards. Only commit moves cards.
+                // Preview only changes Border/Shadow (handled by CSS class).
+                // So this updateVisuals is mainly for LAYOUT (Commit).
+                
+                // We need to differentiate Layout Update vs Preview Update?
+                // Actually, previewIndex changing triggers this. 
+                // But if activeIndex hasn't changed, offsets remain same.
+                // So this function is safe to call.
+                
+                card.style.transition = `
+                    transform ${isLocked ? '600ms' : '0ms'} cubic-bezier(0.2, 0.8, 0.2, 1),
+                    opacity ${isLocked ? '400ms' : '300ms'} ease,
+                    filter 300ms ease
+                `;
+                
+                // If not locked (just previewing or init), we might want smooth return
+                // Actually if we just moved mouse, we don't want cards flying around.
+                // Cards only move when activeIndex changes.
+                
+                card.style.transform = `translateX(var(--tx)) scale(var(--scale))`;
+                card.style.zIndex = zIndex;
+                card.style.opacity = opacity;
+                // card.style.filter = filter;
+            });
+        }
+
+        function updateIndicators() {
+            const indicators = document.getElementById('indicators').children;
+            Array.from(indicators).forEach((dot, i) => {
+                dot.className = `w-1.5 h-1.5 rounded-full transition-colors duration-300 ${i === activeIndex ? 'bg-gray-800 scale-125' : 'bg-gray-300'}`;
+            });
+        }
+
+        // ================= CLICK LOGIC (3) =================
+        function handleCardClick(index, card) {
+            if (index === activeIndex) {
+                // Logic: Click center -> Go
+                window.location.href = DATA[index].link;
+            } else {
+                // Click-to-focus
+                // 3) Visual Feedback: Scale Pulse
+                card.style.setProperty('--tx', index === (activeIndex - 1 + 3) % 3 ? '-110%' : '110%');
+                card.classList.add('clicked-feedback');
+                setTimeout(() => card.classList.remove('clicked-feedback'), 260);
+
+                commitSwitch(index, true);
+            }
+        }
+
+        // Keyboard & Touch (Same as before)
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('intro') && document.getElementById('intro').classList.contains('is-visible')) return;
+
+            if (e.key === 'ArrowRight') { const next = (activeIndex + 1) % 3; commitSwitch(next, true); previewIndex = next; }
+            if (e.key === 'ArrowLeft') { const prev = (activeIndex - 1 + 3) % 3; commitSwitch(prev, true); previewIndex = prev; }
+            if (e.key === 'Enter') window.location.href = DATA[activeIndex].link;
+        });
+    </script>
+</body>
+</html>

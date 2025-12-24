@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family - Your Name</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center pointer-events-none">
+        <a href="preview.html" class="pointer-events-auto flex items-center gap-2 text-gray-500 hover:text-black transition-colors duration-300 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-100 shadow-sm hover:shadow-md">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span class="text-sm font-medium">Home</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-2xl mx-auto px-6 pt-40 pb-24 text-center">
+        
+        <div class="animate-[scaleUp_1s_ease-out]">
+            <div class="w-16 h-16 mx-auto bg-sky-100 rounded-full flex items-center justify-center mb-8">
+                <span class="text-2xl">💧</span>
+            </div>
+            
+            <h1 class="text-3xl md:text-4xl font-light text-slate-800 mb-8 tracking-tight">
+                Family & Quiet Moments
+            </h1>
+            
+            <div class="prose prose-slate mx-auto text-slate-500 leading-loose">
+                <p class="mb-4">
+                    Some things are kept offline, treasured in the quiet spaces between pixels.
+                </p>
+                <p>
+                    This space is dedicated to the people who make life flow like water—essential, 
+                    transparent, and life-giving.
+                </p>
+            </div>
+
+            <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-50">
+                <!-- Privacy Placeholders -->
+                <div class="aspect-square bg-slate-200 rounded-lg animate-pulse" style="animation-delay: 0.2s"></div>
+                <div class="aspect-square bg-slate-200 rounded-lg animate-pulse" style="animation-delay: 0.4s"></div>
+                <div class="aspect-square bg-slate-200 rounded-lg animate-pulse" style="animation-delay: 0.6s"></div>
+                <div class="aspect-square bg-slate-200 rounded-lg animate-pulse" style="animation-delay: 0.8s"></div>
+            </div>
+            
+            <p class="mt-8 text-xs text-slate-400 uppercase tracking-widest">
+                Private Collection
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // Simple fade-in and scale animation
+        document.body.style.opacity = '0';
+        window.onload = function() {
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 1s ease-out';
+                document.body.style.opacity = '1';
+            }, 50);
+        };
+    </script>
+</body>
+</html>
